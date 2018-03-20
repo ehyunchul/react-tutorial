@@ -2,6 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
 
+
+function Input(props) {
+    return (
+        <input type="number" onKeyPress={props.onKeyPress}/>
+    )
+}
+
 function Square(props) {
     return (
         <button className="square" onClick={props.onClick}>
@@ -43,7 +50,7 @@ class Board extends React.Component {
         this.setState({
             squares: squares,
             xIsNext: !this.state.xIsNext,
-        })
+        });
 
         calculateWinner(squares);
     }
@@ -89,12 +96,32 @@ class Board extends React.Component {
 
 }
 
+
 class ExtensibleGame extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            size: null
+        };
+
+    }
+
     render() {
         return (
             <div className="game">
+                <div className="game-control">
+                </div>
                 <div className="game-board">
-                    <Board size={this.props.size}/>
+                    {
+                        !this.state.size ?
+                            <div>
+                                Enter the game size and press Enter key.
+                                <Input onKeyPress={e => {
+                                    if (e.key === "Enter") this.setState({size: e.target.value});
+                                }}/>
+                            </div> : <Board size={this.state.size}/>
+                    }
                 </div>
                 <div className="game-info">
                     <div>{/* status */}</div>
@@ -108,7 +135,7 @@ class ExtensibleGame extends React.Component {
 // ========================================
 
 ReactDOM.render(
-    <ExtensibleGame size={4}/>,
+    <ExtensibleGame/>,
     document.getElementById('root')
 );
 
